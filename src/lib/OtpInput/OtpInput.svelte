@@ -33,7 +33,7 @@
 		placeholder = '',
 		group = null,
 		isError = false,
-		containerStyles = ``,
+		containerStyle = ``,
 		inputStyles = ``,
 		inputFocusStyle = ``,
 		inputErrorStyle = ``,
@@ -63,9 +63,10 @@
 			if (Array.isArray(refArr) && refArr.length === numInputs) {
 				return inputRefs;
 			} else {
-				throw new Error(
-					'You have passed wrong inputRef type. We expect inputRef of type $state(Array(noOfInputs).fill(null)). Also check noOfInput used while creating inputRef'
-				);
+				console.error(
+					'You have passed wrong inputRef type. We expect inputRef of type %c$state(Array(noOfInputs).fill(null))%c. Also check noOfInput used while creating inputRef',
+					"font-family: monospace; background: #F5F8FA; color: #1F2328; font-weight: bold",
+					"");
 			}
 		}
 
@@ -78,6 +79,10 @@
 	if(!numInputs) throw new Error("numInputs is required and should be of type positive integer.")
 	if (typeof numInputs !== 'number' || numInputs < 1) {
 		throw new Error('numInputs must be a positive integer');
+	}
+
+	if (typeof placeholder !== 'string') {
+		throw new Error('placeholder must be a string');
 	}
 
 	let focusIndex = $state(0);
@@ -130,15 +135,16 @@
 		}
 		// inject placeholder style and clean up on destroy
 		let styleEl;
-		if (placeholderStyle) {
+		if (typeof placeholderStyle === 'object') {
 			styleEl = document.createElement('style');
 			styleEl.textContent = `
 				.${scopedClass} .single-otp-input::placeholder {
-				 ${placeholderStyle}
+				 ${styleObjectToString(placeholderStyle)}
 				}
    		`;
 			document.head.appendChild(styleEl);
 		}
+
 		return () => {
 			styleEl?.remove();
 		};
@@ -223,8 +229,8 @@
 
 <div
 	id="otp-input-lib-container"
-	class={`otp-input-lib-container ${scopedClass}`}
-	style={containerStyles}
+	class={[`otp-input-lib-container ${scopedClass}`, typeof containerStyle === 'string' && containerStyle]}
+	style={typeof containerStyle === 'object' ? styleObjectToString(containerStyle) : ''}
 >
 	{#each Array(numInputs).fill() as _, index}
 		{@const type = getInputType(inputType, index)}
@@ -255,9 +261,10 @@
 
 		<input
 			id={`svelte-otp-inputbox-${index}`}
-			class={['single-otp-input', inputClass, isError && 'otp-input-error']}
+			class={['single-otp-input', inputClass, isError && 'otp-input-error', typeof placeholderStyle === 'string' && placeholderStyle]}
 			style={inputStyle}
 			{type}
+			inputmode={type === 'number' ? 'numeric' : 'text'}
 			bind:this={inputRefs[index]}
 			bind:value={
 				() => inputValues[index],
