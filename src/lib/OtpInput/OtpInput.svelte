@@ -13,7 +13,8 @@
 		getInputType,
 		isSnippet,
 		styleObjectToString,
-		getCSS
+		getCSS,
+		isIphoneOrIpad
 	} from '../helpers/utils.js';
 
 	import {
@@ -85,7 +86,7 @@
 		throw new Error('placeholder must be a string');
 	}
 
-	let focusIndex = $state(0);
+	let focusIndex = $state(null);
 	let inputValues = $state(Array(numInputs).fill(''));
 	let inputRefs = getStatefulArray(inputRef, numInputs);
 	let scopedClass = $state('');
@@ -126,7 +127,8 @@
 	});
 
 	onMount(() => {
-		if (shouldAutoFocus) focusIndex = 0;
+		// on iphone autofocus doesn't work without interaction
+		if (shouldAutoFocus && !isIphoneOrIpad()) focusIndex = 0;
 
 		// generate client-only scoped class to avoid SSR/client mismatch
 		if (!scopedClass) {
@@ -273,7 +275,7 @@
 				}
 			}
 			disabled={isDisabled}
-			autoComplete="off"
+			autocomplete={index === 0 ? 'one-time-code' : 'off'}
 			autocapitalize={(type === 'upper-alnum' || type === 'uppercase') ? 'on' : 'off'}
 			placeholder={ph}
 			aria-label={`Please enter OTP character ${index + 1}`}
