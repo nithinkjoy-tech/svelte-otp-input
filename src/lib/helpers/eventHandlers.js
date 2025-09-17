@@ -4,6 +4,7 @@ import {
 	getInputType,
 	getSortedKeysByPriority,
 	getValidInput,
+	isIphoneOrIpad,
 	removeFocusStyle,
 	validateInput
 } from './utils.js';
@@ -95,7 +96,7 @@ export class KeyDownClass extends EventHandler {
 		switch (event.key) {
 			case 'Backspace':
 				this.inputRefs[index].value
-					? this.onInputInstance.handleOnInput(event, index)
+					? this.onInputInstance.handleOnInput(event, isIphoneOrIpad()?index +1 : index)
 					: this.onFocusInstance.handleInputFocus(event, index - 1);
 				break;
 			case 'Enter':
@@ -154,6 +155,10 @@ export class OnFocusClass extends EventHandler {
 
 		if (shouldApply && this.inputFocusStyle) {
 			applyFocusStyle(this.inputRefs[index], this.inputFocusStyle);
+
+			if(event.key === "Backspace" || event.key === "Backspace"){
+				removeFocusStyle(this.inputRefs[index]);
+			}
 		}
 	}
 

@@ -263,7 +263,7 @@
 			id={`svelte-otp-inputbox-${index}`}
 			class={['single-otp-input', inputClass, isError && 'otp-input-error', typeof placeholderStyle === 'string' && placeholderStyle]}
 			style={inputStyle}
-			{type}
+			type={(type==='password' || type === 'number') ? type : 'text'}
 			inputmode={type === 'number' ? 'numeric' : 'text'}
 			bind:this={inputRefs[index]}
 			bind:value={
@@ -274,6 +274,7 @@
 			}
 			disabled={isDisabled}
 			autoComplete="off"
+			autocapitalize={(type === 'upper-alnum' || type === 'uppercase') ? 'on' : 'off'}
 			placeholder={ph}
 			aria-label={`Please enter OTP character ${index + 1}`}
 			onkeydown={(e) => keyDownInstance.handleKeyDown(e, index, keyDown)}

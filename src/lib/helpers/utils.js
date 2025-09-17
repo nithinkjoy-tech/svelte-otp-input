@@ -7,6 +7,8 @@ export function setValue(values) {
 }
 
 export function applyFocusStyle(el, style) {
+	if(!el) return;
+
 	el.dataset.prevStyle = el.style.cssText;
 	el.dataset.prevClass = el.className;
 
@@ -22,6 +24,8 @@ export function applyFocusStyle(el, style) {
 }
 
 export function removeFocusStyle(el) {
+	if(!el) return;
+
 	if (el.dataset.prevStyle !== undefined) {
 		el.style.cssText = el.dataset.prevStyle;
 		delete el.dataset.prevStyle;
@@ -32,7 +36,6 @@ export function removeFocusStyle(el) {
 		delete el.dataset.prevClass;
 	}
 }
-
 
 export function getInputType(inputType, index) {
 	if (typeof inputType === 'string') return inputType;
@@ -132,6 +135,7 @@ export function isSnippet(fn) {
 }
 
 export function transformCase(e, input) {
+	e.preventDefault();
 	requestAnimationFrame(() => {
 		const { selectionStart, selectionEnd, value } = e.target;
 		const before = value.slice(0, selectionStart - 1);
@@ -140,6 +144,19 @@ export function transformCase(e, input) {
 		e.target.setSelectionRange(selectionStart, selectionStart);
 		e.target.dispatchEvent(new Event('input', { bubbles: true }));
 	});
+}
+
+export function isIphoneOrIpad() {
+	const ua = navigator.userAgent || navigator.vendor || window.opera;
+
+	// iPhone check
+	if (/iPhone/i.test(ua)) return true;
+
+	// iPad check (covers old iPads + new iPadOS that spoof as Mac)
+	if (/iPad/i.test(ua)) return true;
+	if (/Macintosh/i.test(ua) && "ontouchend" in document) return true;
+
+	return false;
 }
 
 export function checkValidation(inputType, value) {
