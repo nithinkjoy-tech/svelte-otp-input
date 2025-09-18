@@ -28,7 +28,7 @@
 	let {
 		inputType = 'number',
 		numInputs,
-		separator = '.',
+		separator = '-',
 		groupSeparator = '  ',
 		shouldAutoFocus = false,
 		placeholder = '',
@@ -219,12 +219,12 @@
 			{#if isSnippet(sep)}
 				{@render sep()}
 			{:else}
-				<span>{sep}</span>
+				<span class="otp-separator">{sep}</span>
 			{/if}
 		{:else if isSnippet(sep)}
 			{@render sep()}
 		{:else}
-			<span>{sep}</span>
+			<span class="otp-separator">{sep}</span>
 		{/if}
 	{/if}
 {/snippet}
@@ -302,17 +302,25 @@
 	}
 
 	.single-otp-input {
-		height: 60px;
-		width: 60px;
-		border-radius: 5px;
-		text-align: center;
-		font-size: 40px;
-		line-height: 60px;
-		margin: 0 12px;
-		border: 2px solid #6f6e6c;
-		box-sizing: border-box;
-		-moz-appearance: textfield;
-		appearance: textfield;
+      width: 50px;
+      height: 48px;
+      border: none;
+      text-align: center;
+      border-radius: 4px;
+      font-size: 32px;
+      line-height: 22px;
+      color: #1e1e1e;
+      border: 1px solid #1e1e1e;
+      background-color: transparent;
+      -moz-appearance: textfield;
+	}
+
+	.single-otp-input:focus {
+			border: 2px solid #3173DC;
+	}
+
+	.otp-separator {
+			margin: 0 8px;
 	}
 
 	.otp-input-error {
