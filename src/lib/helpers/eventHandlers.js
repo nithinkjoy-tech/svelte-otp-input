@@ -1,12 +1,12 @@
 import {
 	applyFocusStyle,
-	getInputFocusStyles,
 	getInputType,
 	getSortedKeysByPriority,
 	getValidInput,
 	isIphoneOrIpad,
 	removeFocusStyle,
-	validateInput
+	validateInput,
+	detectBrowser,
 } from './utils.js';
 
 export class EventHandler {
@@ -50,25 +50,78 @@ export class EventHandler {
 }
 
 export class OnInputClass extends EventHandler {
-	constructor({ numInputs, setFocusIndex }) {
-		super('onInput');
+	#onPasteInstance;
+
+	constructor({ numInputs, setFocusIndex, onPasteInstance }) {
+		super("onInput");
 		this.numInputs = numInputs;
 		this.setFocusIndex = setFocusIndex;
+		this.#onPasteInstance = onPasteInstance;
+
+		const { isChrome, isSafari } = detectBrowser();
+		this.isChrome = isChrome;
+		this.isSafari = isSafari;
+
+		// Keep inputValues consistent with OnPasteClass
+		this.inputValues = [];
+	}
+
+	#createFakePasteEvent(data) {
+		return {
+			clipboardData: {
+				getData: () => data
+			},
+			preventDefault: () => {}
+		};
 	}
 
 	defaultHandler(event, index) {
 		const isDelete =
-			event.inputType === 'deleteContentBackward' ||
-			event.key === 'Backspace' ||
-			event.key === 'deleteContentCut';
+			event.inputType === "deleteContentBackward" ||
+			event.key === "Backspace" ||
+			event.key === "deleteContentCut";
 
-		this.setFocusIndex(isDelete ? index - 1 : Math.min(index + 1, this.numInputs - 1));
+		// Chrome autofill
+		if (this.isChrome && event.data?.length === this.numInputs && index === 0) {
+			this.#onPasteInstance.handleInputPaste(
+				this.#createFakePasteEvent(event.data),
+				0,
+				null,
+				false
+			);
+			setTimeout(() => {
+				this.setFocusIndex(this.numInputs - 1);
+			})
+		}
+
+		// Safari autofill
+		if (this.isSafari && !("view" in event)) {
+			this.inputValues.push(event.target.value);
+			event.preventDefault();
+			setTimeout(() => {
+				this.#onPasteInstance.handleInputPaste(
+					this.#createFakePasteEvent(this.inputValues.join("")),
+					0,
+					null,
+					false
+				);
+				this.setFocusIndex(this.numInputs - 1);
+			}, 100);
+		}
+
+		// Move focus
+		const focusIndex = isDelete
+			? index - 1
+			: Math.min(index + 1, this.numInputs - 1);
+
+		this.setFocusIndex(focusIndex);
 	}
 
 	handleOnInput(event, index, onInput) {
 		this._handle(event, index, onInput);
 	}
 }
+
 
 export class KeyDownClass extends EventHandler {
 	constructor({
@@ -96,7 +149,7 @@ export class KeyDownClass extends EventHandler {
 		switch (event.key) {
 			case 'Backspace':
 				this.inputRefs[index].value
-					? this.onInputInstance.handleOnInput(event, isIphoneOrIpad()?index +1 : index)
+					? this.onInputInstance.handleOnInput(event, isIphoneOrIpad() ? index + 1 : index)
 					: this.onFocusInstance.handleInputFocus(event, index - 1);
 				break;
 			case 'Enter':
@@ -149,14 +202,15 @@ export class OnFocusClass extends EventHandler {
 		this.setFocusIndex(index);
 		if (!this.inputFocusStyle) return;
 
-		const sortedKeys = getSortedKeysByPriority(this.stylePriority)
+		const sortedKeys = getSortedKeysByPriority(this.stylePriority);
 		const shouldApply =
-			!this.isError || sortedKeys.indexOf('inputErrorStyle') > sortedKeys.indexOf('inputFocusStyle');
+			!this.isError ||
+			sortedKeys.indexOf('inputErrorStyle') > sortedKeys.indexOf('inputFocusStyle');
 
 		if (shouldApply && this.inputFocusStyle) {
 			applyFocusStyle(this.inputRefs[index], this.inputFocusStyle);
 
-			if(event.key === "Backspace" || event.key === "Backspace"){
+			if (event.key === 'Backspace' || event.key === 'Backspace') {
 				removeFocusStyle(this.inputRefs[index]);
 			}
 		}

@@ -1,5 +1,9 @@
 import { stateData } from "../OtpInput/OtpInput.svelte"
 
+export function getInputRef() {
+	return stateData.data.inputRefs
+}
+
 export function setValue(values) {
 	for (let i = 0; i < stateData.data.numInputs; i++) {
 		stateData.data.inputValues[i] = getValidInput(getInputType(stateData.data.inputType, i), values[i]) ?? '';
@@ -157,6 +161,19 @@ export function isIphoneOrIpad() {
 	if (/Macintosh/i.test(ua) && "ontouchend" in document) return true;
 
 	return false;
+}
+
+export function detectBrowser() {
+	const userAgent = navigator.userAgent.toLowerCase();
+
+	const isChrome = /chrome|chromium/.test(userAgent) && !/edg|opr|firefox/.test(userAgent);
+	const isChromeIOS = /crios/.test(userAgent);
+	const isSafari = /safari/.test(userAgent) && !/chrome|crios|chromium|edg|opr|firefox/.test(userAgent);
+
+	return {
+		isChrome: isChrome || isChromeIOS,  // Treat iOS Chrome as Chrome
+		isSafari
+	};
 }
 
 export function checkValidation(inputType, value) {

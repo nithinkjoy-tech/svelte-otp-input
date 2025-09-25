@@ -91,7 +91,7 @@
 	let inputRefs = getStatefulArray(inputRef, numInputs);
 	let scopedClass = $state('');
 
-	setData({ inputValues, numInputs, inputType });
+	setData({ inputValues, numInputs, inputType, inputRefs });
 
 	const setFocusIndex = (i) => (focusIndex = i);
 
@@ -105,7 +105,8 @@
 		setValue
 	};
 
-	const onInputInstance = new OnInputClass({ numInputs, setFocusIndex });
+	const onPasteInstance = new OnPasteClass({ numInputs, inputValues, setFocusIndex, inputType });
+	const onInputInstance = new OnInputClass({ numInputs, setFocusIndex, onPasteInstance });
 	const onFocusInstance = new OnFocusClass({
 		inputRefs,
 		inputFocusStyle,
@@ -114,7 +115,6 @@
 		isError
 	});
 	const onBlurInstance = new OnBlurClass({ inputRefs, inputFocusStyle });
-	const onPasteInstance = new OnPasteClass({ numInputs, inputValues, setFocusIndex, inputType });
 	const keyDownInstance = new KeyDownClass({
 		numInputs,
 		inputRefs,
@@ -293,6 +293,19 @@
 	input:focus {
 		outline: none;
 	}
+
+  input:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px white inset !important; /* force background */
+      box-shadow: 0 0 0 1000px white inset !important;
+      -webkit-text-fill-color: #000 !important; /* keep text color consistent */
+      transition: background-color 9999s ease-in-out 0s; /* prevents flashing */
+  }
+
+  /* Firefox */
+  input:autofill {
+      box-shadow: 0 0 0 1000px white inset !important;
+      -webkit-text-fill-color: #000 !important;
+  }
 
 	.otp-input-lib-container {
 		display: flex;
