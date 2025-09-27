@@ -1,0 +1,1 @@
+<h1>This is bind:value thingg</h1>

@@ -1,3 +1,18 @@
-<h1>Welcome to your library project</h1>
-<p>Create your package using @sveltejs/package and preview/showcase your work with SvelteKit</p>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script>
+	import SideBar from './Components/SideBar.svelte';
+	import Content from './Components/Content.svelte';
+
+	let activeContent = $state('Basic Usage');
+</script>
+
+<div class="docs-page">
+	<SideBar bind:activeContent={activeContent} />
+	<Content activeContent={activeContent}/>
+</div>
+
+<style>
+	.docs-page {
+			display: flex;
+			flex-direction: row;
+	}
+</style>
