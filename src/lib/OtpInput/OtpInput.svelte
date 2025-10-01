@@ -30,7 +30,7 @@
 		numInputs,
 		separator = '-',
 		groupSeparator = '  ',
-		shouldAutoFocus = false,
+		shouldAutoFocus = true,
 		placeholder = '',
 		group = null,
 		isError = false,

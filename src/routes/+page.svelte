@@ -1,18 +1,12 @@
 <script>
-	import SideBar from './Components/SideBar.svelte';
-	import Content from './Components/Content.svelte';
+	import OtpInput from "$lib/index.js"
 
-	let activeContent = $state('Basic Usage');
+	let value = $state("");
 </script>
 
-<div class="docs-page">
-	<SideBar bind:activeContent={activeContent} />
-	<Content activeContent={activeContent}/>
+<div id="app" class="otp-input">
+	<OtpInput
+		bind:value
+		numInputs={4}
+	></OtpInput>
 </div>
-
-<style>
-	.docs-page {
-			display: flex;
-			flex-direction: row;
-	}
-</style>
