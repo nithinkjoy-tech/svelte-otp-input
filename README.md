@@ -1,6 +1,6 @@
 # Svelte OTP Input
 
-A flexible and customizable OTP (One-Time Password) input component for Svelte 5+ applications.
+A flexible and customizable OTP (One-Time Password) input component that **supports Svelte 5+**.
 
 ## Features
 
