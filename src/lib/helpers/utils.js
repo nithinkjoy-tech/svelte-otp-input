@@ -1,8 +1,5 @@
 import { stateData } from "../OtpInput/OtpInput.svelte"
-
-export function getInputRef() {
-	return stateData.data.inputRefs
-}
+export { internalInputRef as inputRef } from "../OtpInput/OtpInput.svelte"
 
 export function setValue(values) {
 	for (let i = 0; i < stateData.data.numInputs; i++) {

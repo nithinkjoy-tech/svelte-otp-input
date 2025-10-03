@@ -1,8 +1,10 @@
 <script module>
 	export const stateData = {};
+	export let internalInputRef = [];
 
 	export function setData(data) {
 		stateData.data = data;
+		internalInputRef = data.inputRefs;
 	}
 </script>
 
