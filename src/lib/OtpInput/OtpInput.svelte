@@ -11,7 +11,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import {
-		setValue,
+		setValue as _setValue,
 		getInputType,
 		isSnippet,
 		styleObjectToString,
@@ -88,39 +88,39 @@
 		throw new Error('placeholder must be a string');
 	}
 
-	let focusIndex = $state(null);
-	let inputValues = $state(Array(numInputs).fill(''));
-	let inputRefs = getStatefulArray(inputRef, numInputs);
+	let _focusIndex = $state(null);
+	let _inputValues = $state(Array(numInputs).fill(''));
+	let _inputRefs = getStatefulArray(inputRef, numInputs);
 	let scopedClass = $state('');
 
-	setData({ inputValues, numInputs, inputType, inputRefs });
+	setData({ inputValues: _inputValues, numInputs, inputType, inputRefs: _inputRefs });
 
-	const setFocusIndex = (i) => (focusIndex = i);
+	const _setFocusIndex = (i) => (_focusIndex = i);
 
-	export const internal = {
-		get focusIndex() {
-			return focusIndex;
-		},
-		inputValues,
-		setFocusIndex,
-		inputRefs,
-		setValue
+	export const inputValues = _inputValues;
+	export const inputRefs = _inputRefs;
+	export const setFocusIndex = _setFocusIndex;
+	export const setValue = _setValue;
+	export const focusIndex = {
+		get current() {
+			return _focusIndex;
+		}
 	};
 
-	const onPasteInstance = new OnPasteClass({ numInputs, inputValues, setFocusIndex, inputType });
-	const onInputInstance = new OnInputClass({ numInputs, setFocusIndex, onPasteInstance });
+	const onPasteInstance = new OnPasteClass({ numInputs, _inputValues, _setFocusIndex, inputType });
+	const onInputInstance = new OnInputClass({ numInputs, _setFocusIndex, onPasteInstance });
 	const onFocusInstance = new OnFocusClass({
-		inputRefs,
+		_inputRefs,
 		inputFocusStyle,
-		setFocusIndex,
+		_setFocusIndex,
 		stylePriority,
 		isError
 	});
-	const onBlurInstance = new OnBlurClass({ inputRefs, inputFocusStyle });
+	const onBlurInstance = new OnBlurClass({ _inputRefs, inputFocusStyle });
 	const keyDownInstance = new KeyDownClass({
 		numInputs,
-		inputRefs,
-		setFocusIndex,
+		_inputRefs,
+		_setFocusIndex,
 		onInputInstance,
 		onFocusInstance,
 		inputType,
@@ -130,7 +130,7 @@
 
 	onMount(() => {
 		// on iphone autofocus doesn't work without interaction
-		if (shouldAutoFocus && !isIphoneOrIpad()) focusIndex = 0;
+		if (shouldAutoFocus && !isIphoneOrIpad()) _focusIndex = 0;
 
 		// generate client-only scoped class to avoid SSR/client mismatch
 		if (!scopedClass) {
@@ -155,10 +155,10 @@
 	});
 
 	$effect(() => {
-		if (focusIndex !== null && inputRefs[focusIndex]) {
+		if (_focusIndex !== null && _inputRefs[_focusIndex]) {
 			setTimeout(() => {
-				inputRefs[focusIndex]?.focus();
-				inputRefs[focusIndex]?.select();
+				_inputRefs[_focusIndex]?.focus();
+				_inputRefs[_focusIndex]?.select();
 			});
 		}
 	});
@@ -175,7 +175,7 @@
 	});
 
 	$effect(() => {
-		value = inputValues.join('');
+		value = _inputValues.join('');
 	});
 
 	$effect(() => {
@@ -240,7 +240,7 @@
 		{@const type = getInputType(inputType, index)}
 		{@const ph = placeholder[index] || ''}
 		{@const inputClass = getCSS(
-			inputRefs,
+			_inputRefs,
 			isError,
 			inputErrorStyle,
 			isDisabled,
@@ -252,7 +252,7 @@
 
 		{@const inputStyle = styleObjectToString(
 			getCSS(
-				inputRefs,
+				_inputRefs,
 				isError,
 				inputErrorStyle,
 				isDisabled,
@@ -269,11 +269,11 @@
 			style={inputStyle}
 			type={(type==='password' || type === 'number') ? type : 'text'}
 			inputmode={type === 'number' ? 'numeric' : 'text'}
-			bind:this={inputRefs[index]}
+			bind:this={_inputRefs[index]}
 			bind:value={
-				() => inputValues[index],
+				() => _inputValues[index],
 				(v) => {
-					inputValues[index] = v?.toString()?.substring(0, 1);
+					_inputValues[index] = v?.toString()?.substring(0, 1);
 				}
 			}
 			disabled={isDisabled}

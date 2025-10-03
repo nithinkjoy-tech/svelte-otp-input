@@ -52,10 +52,10 @@ export class EventHandler {
 export class OnInputClass extends EventHandler {
 	#onPasteInstance;
 
-	constructor({ numInputs, setFocusIndex, onPasteInstance }) {
+	constructor({ numInputs, _setFocusIndex, onPasteInstance }) {
 		super("onInput");
 		this.numInputs = numInputs;
-		this.setFocusIndex = setFocusIndex;
+		this.setFocusIndex = _setFocusIndex;
 		this.#onPasteInstance = onPasteInstance;
 
 		const { isChrome, isSafari } = detectBrowser();
@@ -126,8 +126,8 @@ export class OnInputClass extends EventHandler {
 export class KeyDownClass extends EventHandler {
 	constructor({
 		numInputs,
-		inputRefs,
-		setFocusIndex,
+		_inputRefs,
+		_setFocusIndex,
 		onInputInstance,
 		onFocusInstance,
 		inputType,
@@ -136,8 +136,8 @@ export class KeyDownClass extends EventHandler {
 	}) {
 		super('keyDown');
 		this.numInputs = numInputs;
-		this.inputRefs = inputRefs;
-		this.setFocusIndex = setFocusIndex;
+		this.inputRefs = _inputRefs;
+		this.setFocusIndex = _setFocusIndex;
 		this.onInputInstance = onInputInstance;
 		this.onFocusInstance = onFocusInstance;
 		this.inputType = inputType;
@@ -189,11 +189,11 @@ export class KeyDownClass extends EventHandler {
 }
 
 export class OnFocusClass extends EventHandler {
-	constructor({ inputRefs, inputFocusStyle, setFocusIndex, stylePriority, isError }) {
+	constructor({ _inputRefs, inputFocusStyle, _setFocusIndex, stylePriority, isError }) {
 		super('onFocus');
-		this.inputRefs = inputRefs;
+		this.inputRefs = _inputRefs;
 		this.inputFocusStyle = inputFocusStyle;
-		this.setFocusIndex = setFocusIndex;
+		this.setFocusIndex = _setFocusIndex;
 		this.stylePriority = stylePriority;
 		this.isError = isError;
 	}
@@ -222,9 +222,9 @@ export class OnFocusClass extends EventHandler {
 }
 
 export class OnBlurClass extends EventHandler {
-	constructor({ inputRefs, inputFocusStyle }) {
+	constructor({ _inputRefs, inputFocusStyle }) {
 		super('onBlur');
-		this.inputRefs = inputRefs;
+		this.inputRefs = _inputRefs;
 		this.inputFocusStyle = inputFocusStyle;
 	}
 
@@ -242,11 +242,11 @@ export class OnBlurClass extends EventHandler {
 export class OnPasteClass extends EventHandler {
 	#restrictPaste = false;
 
-	constructor({ numInputs, inputValues, setFocusIndex, inputType }) {
+	constructor({ numInputs, _inputValues, _setFocusIndex, inputType }) {
 		super('onPaste');
 		this.numInputs = numInputs;
-		this.inputValues = inputValues;
-		this.setFocusIndex = setFocusIndex;
+		this.inputValues = _inputValues;
+		this.setFocusIndex = _setFocusIndex;
 		this.inputType = inputType;
 	}
 
