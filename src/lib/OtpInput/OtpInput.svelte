@@ -238,7 +238,7 @@
 >
 	{#each Array(numInputs).fill() as _, index}
 		{@const type = getInputType(inputType, index)}
-		{@const ph = placeholder[index] || ''}
+		{@const ph = placeholder.length === 1 ? placeholder[0] : placeholder[index] || ''}
 		{@const inputClass = getCSS(
 			_inputRefs,
 			isError,
