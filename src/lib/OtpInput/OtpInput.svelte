@@ -338,6 +338,10 @@
 			border: 2px solid #3173DC;
 	}
 
+	.single-otp-input:disabled {
+      background-color: #e9ecef
+	}
+
 	.otp-separator {
 			margin: 0 8px;
 	}
