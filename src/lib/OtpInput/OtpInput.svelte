@@ -88,6 +88,10 @@
 		throw new Error('placeholder must be a string');
 	}
 
+	if (inputStyles && (typeof inputStyles === 'object' || (typeof inputStyles === 'string' && !inputStyles.includes('focus'))) && !inputFocusStyle) {
+		inputFocusStyle = { border: '2px solid #3173DC' };
+	}
+
 	let _focusIndex = $state(null);
 	let _inputValues = $state(Array(numInputs).fill(''));
 	let _inputRefs = getStatefulArray(inputRef, numInputs);
@@ -293,7 +297,7 @@
 
 <style>
 	input:focus {
-		outline: none;
+		outline: none !important;
 	}
 
   input:-webkit-autofill {
