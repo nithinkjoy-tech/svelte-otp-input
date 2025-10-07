@@ -1,22 +1,32 @@
-import { stateData } from "../OtpInput/OtpInput.svelte"
-export { internalInputRef as inputRef } from "../OtpInput/OtpInput.svelte"
+import { stateData } from '../OtpInput/OtpInput.svelte';
+export {
+	internalInputRef as inputRef,
+	_onPasteInstance as onPasteInstance,
+	_onInputInstance as onInputInstance,
+	_onFocusInstance as onFocusInstance,
+	_onBlurInstance as onBlurInstance,
+	_keyDownInstance as keyDownInstance,
+	_setFocusIndex as setFocusIndex,
+	_inputValues as inputValues,
+} from '../OtpInput/OtpInput.svelte';
 
 export function setValue(values) {
 	for (let i = 0; i < stateData.data.numInputs; i++) {
-		stateData.data.inputValues[i] = getValidInput(getInputType(stateData.data.inputType, i), values[i]) ?? '';
+		stateData.data.inputValues[i] =
+			getValidInput(getInputType(stateData.data.inputType, i), values[i]) ?? '';
 	}
 }
 
 export function applyFocusStyle(el, style) {
-	if(!el) return;
+	if (!el) return;
 
 	el.dataset.prevStyle = el.style.cssText;
 	el.dataset.prevClass = el.className;
 
-	if (typeof style === "string") {
+	if (typeof style === 'string') {
 		// For tailwind type classes
 		el.classList.add(...style.split(/\s+/).filter(Boolean));
-	} else if (typeof style === "object" && style !== null) {
+	} else if (typeof style === 'object' && style !== null) {
 		// For inline style object
 		Object.entries(style).forEach(([key, value]) => {
 			el.style.cssText += `${key}:${value};`;
@@ -25,7 +35,7 @@ export function applyFocusStyle(el, style) {
 }
 
 export function removeFocusStyle(el) {
-	if(!el) return;
+	if (!el) return;
 
 	if (el.dataset.prevStyle !== undefined) {
 		el.style.cssText = el.dataset.prevStyle;
@@ -45,8 +55,8 @@ export function getInputType(inputType, index) {
 }
 
 export function getSortedKeysByPriority(stylePriority) {
-	return Object.keys(stylePriority).sort(
-		(a, b) => stylePriority[a].localeCompare(stylePriority[b])
+	return Object.keys(stylePriority).sort((a, b) =>
+		stylePriority[a].localeCompare(stylePriority[b])
 	);
 }
 
@@ -61,39 +71,47 @@ export function getCSS(
 	index
 ) {
 	const candidates = {
-		inputErrorStyle: isError && inputErrorStyle
-			? (Array.isArray(inputErrorStyle) ? inputErrorStyle[index] : inputErrorStyle)
-			: null,
+		inputErrorStyle:
+			isError && inputErrorStyle
+				? Array.isArray(inputErrorStyle)
+					? inputErrorStyle[index]
+					: inputErrorStyle
+				: null,
 
-		inputDisabledStyle: isDisabled && inputDisabledStyle
-			? (Array.isArray(inputDisabledStyle) ? inputDisabledStyle[index] : inputDisabledStyle)
-			: null,
+		inputDisabledStyle:
+			isDisabled && inputDisabledStyle
+				? Array.isArray(inputDisabledStyle)
+					? inputDisabledStyle[index]
+					: inputDisabledStyle
+				: null,
 
 		inputStyles: inputStyles
-			? (Array.isArray(inputStyles) ? inputStyles[index] : inputStyles)
-			: null,
+			? Array.isArray(inputStyles)
+				? inputStyles[index]
+				: inputStyles
+			: null
 	};
 
 	const sortedKeys = getSortedKeysByPriority(stylePriority);
 
 	return {
 		getInputClass() {
-			let overrideClass = "";
+			let overrideClass = '';
 			for (const key of sortedKeys) {
-				if (key !== "inputStyles" && candidates[key]) {
+				if (key !== 'inputStyles' && candidates[key]) {
 					overrideClass = candidates[key];
 					break;
 				}
 			}
 
-			return [candidates.inputStyles, overrideClass].filter(Boolean).join(" ");
+			return [candidates.inputStyles, overrideClass].filter(Boolean).join(' ');
 		},
 
 		getInputStyles() {
 			let finalStyle = { ...(candidates.inputStyles || {}) };
 
 			for (const key of sortedKeys) {
-				if (key !== "inputStyles" && candidates[key]) {
+				if (key !== 'inputStyles' && candidates[key]) {
 					finalStyle = { ...finalStyle, ...candidates[key] };
 				}
 			}
@@ -104,12 +122,14 @@ export function getCSS(
 }
 
 export function styleObjectToString(styleObj = {}) {
-	return Object.entries(styleObj)
-		.map(([key, value]) => {
-			const cssKey = key.replace(/([A-Z])/g, "-$1").toLowerCase();
-			return `${cssKey}:${value}`;
-		})
-		.join("; ") + (Object.keys(styleObj).length ? ";" : "");
+	return (
+		Object.entries(styleObj)
+			.map(([key, value]) => {
+				const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+				return `${cssKey}:${value}`;
+			})
+			.join('; ') + (Object.keys(styleObj).length ? ';' : '')
+	);
 }
 
 export function getInputFocusStyles(inputFocusStyle, index) {
@@ -121,7 +141,7 @@ export function getInputFocusStyles(inputFocusStyle, index) {
 		if (typeof item === 'object') return styleObjectToString(item || {});
 	}
 
-	throw new Error('inputFocusStyle must be a string / object or array of strings / objects')
+	throw new Error('inputFocusStyle must be a string / object or array of strings / objects');
 }
 
 export function isInvalidNumberKey(key) {
@@ -155,7 +175,7 @@ export function isIphoneOrIpad() {
 
 	// iPad check (covers old iPads + new iPadOS that spoof as Mac)
 	if (/iPad/i.test(ua)) return true;
-	if (/Macintosh/i.test(ua) && "ontouchend" in document) return true;
+	if (/Macintosh/i.test(ua) && 'ontouchend' in document) return true;
 
 	return false;
 }
@@ -165,10 +185,11 @@ export function detectBrowser() {
 
 	const isChrome = /chrome|chromium/.test(userAgent) && !/edg|opr|firefox/.test(userAgent);
 	const isChromeIOS = /crios/.test(userAgent);
-	const isSafari = /safari/.test(userAgent) && !/chrome|crios|chromium|edg|opr|firefox/.test(userAgent);
+	const isSafari =
+		/safari/.test(userAgent) && !/chrome|crios|chromium|edg|opr|firefox/.test(userAgent);
 
 	return {
-		isChrome: isChrome || isChromeIOS,  // Treat iOS Chrome as Chrome
+		isChrome: isChrome || isChromeIOS, // Treat iOS Chrome as Chrome
 		isSafari
 	};
 }

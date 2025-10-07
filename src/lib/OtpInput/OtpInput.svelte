@@ -1,10 +1,24 @@
 <script module>
 	export const stateData = {};
 	export let internalInputRef = [];
+	export let _onPasteInstance = null;
+	export let _onInputInstance = null;
+	export let _onFocusInstance = null;
+	export let _onBlurInstance = null;
+	export let _keyDownInstance = null;
+	export let _setFocusIndex = null;
+	export let _inputValues = [];
 
 	export function setData(data) {
+		_inputValues = data.inputValues;
 		stateData.data = data;
 		internalInputRef = data.inputRefs;
+		_onPasteInstance = data.onPasteInstance;
+		_onInputInstance = data.onInputInstance;
+		_onFocusInstance = data.onFocusInstance;
+		_onBlurInstance = data.onBlurInstance;
+		_keyDownInstance = data.keyDownInstance;
+		_setFocusIndex = data.setFocusIndex;
 	}
 </script>
 
@@ -68,8 +82,9 @@
 			} else {
 				console.error(
 					'You have passed wrong inputRef type. We expect inputRef of type %c$state(Array(noOfInputs).fill(null))%c. Also check noOfInput used while creating inputRef',
-					"font-family: monospace; background: #F5F8FA; color: #1F2328; font-weight: bold",
-					"");
+					'font-family: monospace; background: #F5F8FA; color: #1F2328; font-weight: bold',
+					''
+				);
 			}
 		}
 
@@ -79,7 +94,7 @@
 		return _inputRefs;
 	}
 
-	if(!numInputs) throw new Error("numInputs is required and should be of type positive integer.")
+	if (!numInputs) throw new Error('numInputs is required and should be of type positive integer.');
 	if (typeof numInputs !== 'number' || numInputs < 1) {
 		throw new Error('numInputs must be a positive integer');
 	}
@@ -88,7 +103,12 @@
 		throw new Error('placeholder must be a string');
 	}
 
-	if (inputStyles && (typeof inputStyles === 'object' || (typeof inputStyles === 'string' && !inputStyles.includes('focus'))) && !inputFocusStyle) {
+	if (
+		inputStyles &&
+		(typeof inputStyles === 'object' ||
+			(typeof inputStyles === 'string' && !inputStyles.includes('focus'))) &&
+		!inputFocusStyle
+	) {
 		inputFocusStyle = { border: '2px solid #3173DC' };
 	}
 
@@ -96,8 +116,6 @@
 	let _inputValues = $state(Array(numInputs).fill(''));
 	let _inputRefs = getStatefulArray(inputRef, numInputs);
 	let scopedClass = $state('');
-
-	setData({ inputValues: _inputValues, numInputs, inputType, inputRefs: _inputRefs });
 
 	const _setFocusIndex = (i) => (_focusIndex = i);
 
@@ -111,17 +129,22 @@
 		}
 	};
 
-	const onPasteInstance = new OnPasteClass({ numInputs, _inputValues, _setFocusIndex, inputType });
-	const onInputInstance = new OnInputClass({ numInputs, _setFocusIndex, onPasteInstance });
-	const onFocusInstance = new OnFocusClass({
+	export const onPasteInstance = new OnPasteClass({
+		numInputs,
+		_inputValues,
+		_setFocusIndex,
+		inputType
+	});
+	export const onInputInstance = new OnInputClass({ numInputs, _setFocusIndex, onPasteInstance });
+	export const onFocusInstance = new OnFocusClass({
 		_inputRefs,
 		inputFocusStyle,
 		_setFocusIndex,
 		stylePriority,
 		isError
 	});
-	const onBlurInstance = new OnBlurClass({ _inputRefs, inputFocusStyle });
-	const keyDownInstance = new KeyDownClass({
+	export const onBlurInstance = new OnBlurClass({ _inputRefs, inputFocusStyle });
+	export const keyDownInstance = new KeyDownClass({
 		numInputs,
 		_inputRefs,
 		_setFocusIndex,
@@ -130,6 +153,19 @@
 		inputType,
 		onEnter,
 		getValue: () => value
+	});
+
+	setData({
+		inputValues: _inputValues,
+		numInputs,
+		inputType,
+		inputRefs: _inputRefs,
+		setFocusIndex,
+		onPasteInstance,
+		onInputInstance,
+		onFocusInstance,
+		onBlurInstance,
+		keyDownInstance
 	});
 
 	onMount(() => {
@@ -169,7 +205,7 @@
 
 	$effect(() => {
 		if (group) {
-			if (!Array.isArray(group) || !group.every(n => Number.isInteger(n) && n > 0)) {
+			if (!Array.isArray(group) || !group.every((n) => Number.isInteger(n) && n > 0)) {
 				throw new Error('Group must be an array of positive integers');
 			}
 
@@ -237,7 +273,10 @@
 
 <div
 	id="otp-input-lib-container"
-	class={[`otp-input-lib-container ${scopedClass}`, typeof containerStyle === 'string' && containerStyle]}
+	class={[
+		`otp-input-lib-container ${scopedClass}`,
+		typeof containerStyle === 'string' && containerStyle
+	]}
 	style={typeof containerStyle === 'object' ? styleObjectToString(containerStyle) : ''}
 >
 	{#each Array(numInputs).fill() as _, index}
@@ -269,9 +308,14 @@
 
 		<input
 			id={`svelte-otp-inputbox-${index}`}
-			class={['single-otp-input', inputClass, isError && 'otp-input-error', typeof placeholderStyle === 'string' && placeholderStyle]}
+			class={[
+				'single-otp-input',
+				inputClass,
+				isError && 'otp-input-error',
+				typeof placeholderStyle === 'string' && placeholderStyle
+			]}
 			style={inputStyle}
-			type={(type==='password' || type === 'number') ? type : 'text'}
+			type={type === 'password' || type === 'number' ? type : 'text'}
 			inputmode={type === 'number' ? 'numeric' : 'text'}
 			bind:this={_inputRefs[index]}
 			bind:value={
@@ -282,7 +326,7 @@
 			}
 			disabled={isDisabled}
 			autocomplete={index === 0 ? 'one-time-code' : 'off'}
-			autocapitalize={(type === 'upper-alnum' || type === 'uppercase') ? 'on' : 'off'}
+			autocapitalize={type === 'upper-alnum' || type === 'uppercase' ? 'on' : 'off'}
 			placeholder={ph}
 			aria-label={`Please enter OTP character ${index + 1}`}
 			onkeydown={(e) => keyDownInstance.handleKeyDown(e, index, keyDown)}
@@ -300,18 +344,18 @@
 		outline: none !important;
 	}
 
-  input:-webkit-autofill {
-      -webkit-box-shadow: 0 0 0 1000px white inset !important; /* force background */
-      box-shadow: 0 0 0 1000px white inset !important;
-      -webkit-text-fill-color: #000 !important; /* keep text color consistent */
-      transition: background-color 9999s ease-in-out 0s; /* prevents flashing */
-  }
+	input:-webkit-autofill {
+		-webkit-box-shadow: 0 0 0 1000px white inset !important; /* force background */
+		box-shadow: 0 0 0 1000px white inset !important;
+		-webkit-text-fill-color: #000 !important; /* keep text color consistent */
+		transition: background-color 9999s ease-in-out 0s; /* prevents flashing */
+	}
 
-  /* Firefox */
-  input:autofill {
-      box-shadow: 0 0 0 1000px white inset !important;
-      -webkit-text-fill-color: #000 !important;
-  }
+	/* Firefox */
+	input:autofill {
+		box-shadow: 0 0 0 1000px white inset !important;
+		-webkit-text-fill-color: #000 !important;
+	}
 
 	.otp-input-lib-container {
 		display: flex;
@@ -321,29 +365,29 @@
 	}
 
 	.single-otp-input {
-      width: 50px;
-      height: 48px;
-      border: none;
-      text-align: center;
-      border-radius: 4px;
-      font-size: 32px;
-      line-height: 22px;
-      color: #1e1e1e;
-      border: 1px solid #1e1e1e;
-      background-color: transparent;
-      -moz-appearance: textfield;
+		width: 50px;
+		height: 48px;
+		border: none;
+		text-align: center;
+		border-radius: 4px;
+		font-size: 32px;
+		line-height: 22px;
+		color: #1e1e1e;
+		border: 1px solid #1e1e1e;
+		background-color: transparent;
+		-moz-appearance: textfield;
 	}
 
 	.single-otp-input:focus {
-			border: 2px solid #3173DC;
+		border: 2px solid #3173dc;
 	}
 
 	.single-otp-input:disabled {
-      background-color: #e9ecef
+		background-color: #e9ecef;
 	}
 
 	.otp-separator {
-			margin: 0 8px;
+		margin: 0 8px;
 	}
 
 	.otp-input-error {
