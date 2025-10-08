@@ -7,6 +7,7 @@
 	export let _onBlurInstance = null;
 	export let _keyDownInstance = null;
 	export let _setFocusIndex = null;
+	export let _stylePriority = null;
 	export let _inputValues = [];
 
 	export function setData(data) {
@@ -19,6 +20,7 @@
 		_onBlurInstance = data.onBlurInstance;
 		_keyDownInstance = data.keyDownInstance;
 		_setFocusIndex = data.setFocusIndex;
+		_stylePriority = data.stylePriority;
 	}
 </script>
 
@@ -165,7 +167,8 @@
 		onInputInstance,
 		onFocusInstance,
 		onBlurInstance,
-		keyDownInstance
+		keyDownInstance,
+		stylePriority
 	});
 
 	onMount(() => {
