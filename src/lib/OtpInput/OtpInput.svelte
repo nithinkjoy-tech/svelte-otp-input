@@ -9,6 +9,7 @@
 	export let _setFocusIndex = null;
 	export let _stylePriority = null;
 	export let _inputValues = [];
+	export let _getValue = null;
 
 	export function setData(data) {
 		_inputValues = data.inputValues;
@@ -21,6 +22,7 @@
 		_keyDownInstance = data.keyDownInstance;
 		_setFocusIndex = data.setFocusIndex;
 		_stylePriority = data.stylePriority;
+		_getValue = data.getValue;
 	}
 </script>
 
@@ -168,7 +170,8 @@
 		onFocusInstance,
 		onBlurInstance,
 		keyDownInstance,
-		stylePriority
+		stylePriority,
+		getValue: () => value
 	});
 
 	onMount(() => {

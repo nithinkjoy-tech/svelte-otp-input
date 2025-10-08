@@ -9,6 +9,7 @@ export {
 	_setFocusIndex as setFocusIndex,
 	_inputValues as inputValues,
 	_stylePriority as stylePriority,
+	_getValue as getValue,
 } from '../OtpInput/OtpInput.svelte';
 
 export function setValue(values) {
