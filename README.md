@@ -1,5 +1,5 @@
 # Svelte OTP Input
-<img src="https://svelte-otp-input-docs.pages.dev/_app/immutable/assets/svelte-otp-input-logo.CQBsPVGB.png" alt="Svelte OTP Input Logo" width="200" style="border-radius: 18px;">
+<img src="https://nithinkjoy.dev/docs/svelte-otp-input/_app/immutable/assets/svelte-otp-input-logo.xGFLpuMW.png" alt="Svelte OTP Input Logo" width="200">
 
 [View Detailed Documentation](https://nithinkjoy.dev/docs/svelte-otp-input/basic-usage)
 
