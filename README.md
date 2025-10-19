@@ -1,15 +1,18 @@
 # Svelte OTP Input
+<img src="https://svelte-otp-input-docs.pages.dev/_app/immutable/assets/svelte-otp-input-logo.CQBsPVGB.png" alt="Svelte OTP Input Logo" width="200" style="border-radius: 18px;">
 
-A flexible and customizable OTP (One-Time Password) input component that **supports Svelte 5+**.
+[View Detailed Documentation](https://nithinkjoy.dev/docs/svelte-otp-input/basic-usage)
+
+A flexible and customizable One-Time Password (OTP) input component for **Svelte 5+**. This component provides an easy-to-use solution for implementing OTP input fields in your Svelte applications with full support for customization and programmatic control.
 
 ## Features
 
-- 🎯 **Flexible Input Types**: Support for numbers, text, passwords, and alphanumeric inputs
+- 🎯 **Flexible Input Types**: Support for numbers, text, passwords, and alphanumeric inputs and more
 - 🎨 **Fully Customizable**: Control styles, separators, placeholders, and more
 - 📱 **Mobile Optimized**: Auto-complete support and mobile-friendly interactions
 - ♿ **Accessible**: ARIA labels and keyboard navigation support
 - 🎭 **Error States**: Built-in error styling and validation
-- 🔒 **Paste Protection**: Optional paste restriction for enhanced security
+- 🔒 **Paste Protection**: Optional paste restriction for flexibility
 - 📦 **Grouping Support**: Group inputs with custom separators
 - 🎪 **Snippet Support**: Use Svelte 5 snippets for custom separators
 
@@ -41,12 +44,12 @@ npm install svelte-otp-input
 | Prop | Type | Description |
 |------|------|-------------|
 | `numInputs` | `number` | Number of OTP input boxes (must be a positive integer) |
+| `value` | `string` | `""` | The OTP value (bindable) |
 
 ### Optional Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `value` | `string` | `""` | The OTP value (bindable) |
 | `inputType` | `string` | `"number"` | Input type: `"number"`, `"text"`, `"password"`, `"upper-alnum"`, `"uppercase"` |
 | `separator` | `string \| string[] \| snippet` | `"-"` | Character(s) between inputs |
 | `groupSeparator` | `string \| snippet` | `"  "` | Separator between groups |
@@ -59,15 +62,15 @@ npm install svelte-otp-input
 
 ### Styling Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `containerStyle` | `string \| object` | `""` | Styles for the container |
-| `inputStyles` | `string \| object` | `""` | Styles for input boxes |
-| `inputFocusStyle` | `string \| object` | `""` | Styles when input is focused |
-| `inputErrorStyle` | `string \| object` | `""` | Styles when `isError` is true |
-| `inputDisabledStyle` | `string \| object` | `""` | Styles when inputs are disabled |
-| `placeholderStyle` | `string \| object` | `""` | Styles for placeholder text |
-| `stylePriority` | `object` | See below | Control style precedence |
+| Prop | Type                                                             | Default | Description |
+|------|------------------------------------------------------------------|---------|-------------|
+| `containerStyle` | `tailwind style \| object`                                       | `""` | Styles for the container |
+| `inputStyles` | `tailwind style \| object \| Array(tailwind style \| object) \| svelte global styling` | `""` | Styles for input boxes |
+| `inputFocusStyle` | `tailwind style \| object \| object)`     | `""` | Styles when input is focused |
+| `inputErrorStyle` | `tailwind style \| object \| Array(tailwind style \| object)`    | `""` | Styles when `isError` is true |
+| `inputDisabledStyle` | `tailwind style \| object \| Array(tailwind style \| object)`    | `""` | Styles when inputs are disabled |
+| `placeholderStyle` | `string \| object`                                               | `""` | Styles for placeholder text |
+| `stylePriority` | `object`                                                         | See below | Control style precedence |
 
 **Default Style Priority:**
 ```javascript
@@ -233,12 +236,15 @@ npm install svelte-otp-input
 - `"password"`: Masked input
 - `"upper-alnum"`: Uppercase alphanumeric
 - `"uppercase"`: Uppercase letters only
+- `"lower-alnum"`: Lowercase alphanumeric
+- `"lowercase"`: Lowercase letters only
+- `"alnum"`: Alphanumeric values
+- `"Custom Regex"`: We can specify custom Regex
 
 ## Keyboard Navigation
 
 - **Left/Right Arrow**: Navigate between inputs
 - **Backspace**: Delete current character and move to previous input
-- **Delete**: Clear current input
 - **Tab**: Move to next input (or next form element)
 - **Enter**: Trigger `onEnter` callback
 - **Paste**: Auto-fill all inputs (unless `restrictPaste` is true)
