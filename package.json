@@ -1,6 +1,6 @@
 {
   "name": "svelte-otp-input",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A customizable and accessible OTP (One-Time Password) input component for Svelte 5 and SvelteKit",
   "author": "Nithin K Joy <nithinkjoy1@gmail.com>",
   "license": "MIT",
