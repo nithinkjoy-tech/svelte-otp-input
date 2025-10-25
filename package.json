@@ -1,8 +1,12 @@
 {
   "name": "svelte-otp-input",
-  "version": "0.1.5",
-  "description": "A customizable and accessible OTP (One-Time Password) input component for Svelte 5 and SvelteKit",
-  "author": "Nithin K Joy <nithinkjoy1@gmail.com>",
+  "version": "0.1.6",
+  "description": "Flexible OTP/verification code input component for Svelte 5+ with full customization, mobile support, 2FA/MFA authentication, and accessibility features",
+  "author": {
+    "name": "Nithin K Joy",
+    "email": "nithinkjoy1@gmail.com",
+    "url": "https://nithinkjoy.dev"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -15,11 +19,29 @@
   "keywords": [
     "svelte",
     "svelte5",
+    "svelte-5",
     "otp",
-    "input",
-    "form",
+    "otp-input",
+    "verification-code",
+    "verification-input",
+    "2fa",
+    "mfa",
+    "two-factor-authentication",
+    "multi-factor-authentication",
     "authentication",
-    "svelte-component"
+    "pin-code",
+    "pin-input",
+    "one-time-password",
+    "svelte-component",
+    "sveltekit",
+    "security",
+    "sms-verification",
+    "code-input",
+    "form",
+    "input",
+    "accessible",
+    "a11y",
+    "mobile-friendly"
   ],
   "scripts": {
     "dev": "vite dev",
